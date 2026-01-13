@@ -40,10 +40,6 @@ jobs:
         run: |
             mkdir -p coverage-report
             COVERAGE_FILE=$(find ./TestResults -name 'coverage.cobertura.xml' | head -n 1 || true)
-            if [ -z "$COVERAGE_FILE" ]; then
-                echo "Coverage file not found in ./TestResults"
-                exit 0
-            fi
             reportgenerator -reports:$COVERAGE_FILE -targetdir:coverage-report -reporttypes:Html
             shell: bash
 
