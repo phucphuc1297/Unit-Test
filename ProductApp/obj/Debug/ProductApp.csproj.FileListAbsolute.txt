@@ -1,0 +1,6 @@
+F:\Works\UnitTestExample\ProductApp\bin\Debug\ProductApp.dll
+F:\Works\UnitTestExample\ProductApp\bin\Debug\ProductApp.pdb
+F:\Works\UnitTestExample\ProductApp\obj\Debug\ProductApp.csproj.AssemblyReference.cache
+F:\Works\UnitTestExample\ProductApp\obj\Debug\ProductApp.csproj.CoreCompileInputs.cache
+F:\Works\UnitTestExample\ProductApp\obj\Debug\ProductApp.dll
+F:\Works\UnitTestExample\ProductApp\obj\Debug\ProductApp.pdb
