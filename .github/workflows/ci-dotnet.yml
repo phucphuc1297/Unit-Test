@@ -39,7 +39,7 @@ jobs:
             PATH: ${{ env.PATH }}:$HOME/.dotnet/tools
         run: |
             mkdir -p coverage-report
-            COVERAGE_FILE=$(find ./TestResults -name 'coverage.cobertura.xml' | head -n 1 || true)
+            COVERAGE_FILE=$(find ./TestResults -name 'coverage.cobertura.xml')
             reportgenerator -reports:$COVERAGE_FILE -targetdir:coverage-report -reporttypes:Html
             shell: bash
 
