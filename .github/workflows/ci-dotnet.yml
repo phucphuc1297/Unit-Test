@@ -29,5 +29,25 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore --configuration Release
-      - name: Test
-        run: dotnet test --no-build --verbosity normal --configuration Release
+      - name: Test with coverage
+        run: dotnet test --no-build --configuration Release --results-directory ./TestResults --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+      - name: Install reportgenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.23 || true
+
+      - name: Convert coverage to HTML
+        env:
+          PATH: ${{ env.PATH }}:$HOME/.dotnet/tools
+        run: |
+          mkdir -p coverage-report
+          COVERAGE_FILE=$(find ./TestResults -name 'coverage.cobertura.xml' | head -n 1 || true)
+          if [ -z "$COVERAGE_FILE" ]; then
+            echo "Coverage file not found in ./TestResults"
+            exit 0
+          fi
+          reportgenerator -reports:$COVERAGE_FILE -targetdir:coverage-report -reporttypes:Html
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report
