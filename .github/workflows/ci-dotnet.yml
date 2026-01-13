@@ -9,9 +9,6 @@ on:
 jobs:
   build-and-test:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        dotnet-version: [7.0, 8.0]
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -37,11 +34,21 @@ jobs:
       - name: Convert coverage to HTML
         env:
             PATH: ${{ env.PATH }}:$HOME/.dotnet/tools
+        shell: pwsh
         run: |
-            mkdir -p coverage-report
-            COVERAGE_FILE=$(find ./TestResults -name 'coverage.cobertura.xml')
-            reportgenerator -reports:$COVERAGE_FILE -targetdir:coverage-report -reporttypes:Html
-            shell: bash
+          New-Item -ItemType Directory -Force -Path coverage-report | Out-Null
+
+          $coverageFile = Get-ChildItem -Path ./TestResults -Recurse -Filter "coverage.cobertura.xml" |
+                          Select-Object -First 1 -ExpandProperty FullName
+
+          if (-not $coverageFile) {
+            Write-Error "coverage.cobertura.xml not found under ./TestResults"
+          }
+
+          # Ensure reportgenerator is on PATH (global tool location on Windows runner)
+          $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
+
+          reportgenerator "-reports:$coverageFile" "-targetdir:coverage-report" "-reporttypes:Html"
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
